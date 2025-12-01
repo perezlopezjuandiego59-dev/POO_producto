@@ -1,47 +1,39 @@
-class ProductoNormal:
-    def __init__(self, nombre, precio):
-        if precio < 0:
-            raise ValueError("El precio no puede ser negativo")
+from abc import ABC, abstractmethod
+
+class Producto(ABC):
+    def __init__(self, nombre, precio_base):
         self.nombre = nombre
-        self.precio = precio
+        self.precio_base = precio_base
+
+    @abstractmethod
+    def calcular_precio(self):
+        pass
+
+
+class ProductoNormal(Producto):
+    def calcular_precio(self):
+        return self.precio_base
+
+
+class ProductoImportado(Producto):
+    def __init__(self, nombre, precio_base, arancel):
+        super().__init__(nombre, precio_base)
+        self.arancel = arancel  # porcentaje
 
     def calcular_precio(self):
-        return self.precio 
-    
-class ProductoImportado:
-    def __init__(self, nombre, precio, impuesto=0.15):
-        if precio < 0:
-            raise ValueError("El precio no puede ser negativo")
-        if not (0 <= impuesto <= 1):
-            raise ValueError("El impuesto debe estar entre 0 y 1")
-        
-        self.nombre = nombre
-        self.precio = precio
-        self.impuesto = impuesto
+        return self.precio_base * (1 + self.arancel)
 
-    def calcular_precio(self):
-        return self.precio * (1 + self.impuesto)
-    
-def calcular_precio_total(productos):
-    if not isinstance(productos, list):
-        raise TypeError("Debe enviar una lista de productos")
-    
+
+def calcular_precio_total(lista_productos):
     total = 0
-    for p in productos:
-        if not hasattr(p, "calcular_precio"):
-            raise TypeError("Los elementos de la lista deben tener calcular_precio()")
-        total += p.calcular_precio()
-    return total 
+    for p in lista_productos:
+        total += p.calcular_precio()  # polimorfismo
+    return total
 
-# ======================= SIMULACION =====================
-def simulacion_productos():
-    lista = [
-        ProductoNormal("Pan", 3000),
-        ProductoImportado("Chocolate Suizo", 15000, 0.25),
-        ProductoNormal("Leche", 5000),
+
+if __name__ == "__main__":
+    productos = [
+        ProductoNormal("Lapicero", 2_000),
+        ProductoImportado("Celular", 1_000_000, 0.25),
     ]
-
-    total = calcular_precio_total(lista)
-    print(f"PRECIO TOTAL DE PRODUCTOS: ${total:.0f}")
-
-simulacion_productos()
+    print("Total:", calcular_precio_total(productos))
