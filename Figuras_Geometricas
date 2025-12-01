@@ -1,35 +1,40 @@
+from abc import ABC, abstractmethod
 import math
 
-class Rectangulo:
-    def __init__(self, ancho, alto):
-        self.ancho = ancho
-        self.alto = alto
+class Figura(ABC):
+    @abstractmethod
+    def calcular_area(self):
+        pass
+
+
+class Rectangulo(Figura):
+    def __init__(self, base, altura):
+        self.base = max(0, base)
+        self.altura = max(0, altura)
 
     def calcular_area(self):
-        if self.ancho <= 0 or self.alto <= 0:
-            raise ValueError("El ancho y alto deben ser mayores a 0.")
-        return self.ancho * self.alto
-    
-class Circulo:
+        return self.base * self.altura
+
+
+class Circulo(Figura):
     def __init__(self, radio):
-        self.radio = radio
+        self.radio = max(0, radio)
 
     def calcular_area(self):
-        if self.radio <= 0:
-            raise ValueError("El radio debe ser mayor a 0.")
-        return math.pi * self.radio ** 2
-    
+        return math.pi * (self.radio ** 2)
+
+
 def calcular_area_total(figuras):
     total = 0
     for f in figuras:
         total += f.calcular_area()
-    return total 
+    return total
 
-# ===================== SIMULACION =====================
-figuras = [
-    Rectangulo(4, 6),
-    Rectangulo(3, 5),
-    Circulo(5)
-]
 
-print("Area total:", calcular_area_total(figuras))
+if __name__ == "__main__":
+    figuras = [
+        Rectangulo(4, 5),
+        Circulo(3),
+        Rectangulo(2, 7),
+    ]
+    print("Área total:", calcular_area_total(figuras))
