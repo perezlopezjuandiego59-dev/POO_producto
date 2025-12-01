@@ -1,46 +1,35 @@
-class Automovil: 
-    def __init__(self, placa, valor_comercial, impuesto=0.10):
-        if valor_comercial < 0:
-            raise ValueError("El valor comercial no puede ser negativo")
+from abc import ABC, abstractmethod
+
+class Vehiculo(ABC):
+    def __init__(self, placa, valor_comercial):
         self.placa = placa
         self.valor_comercial = valor_comercial
-        self.impuesto = impuesto
 
+    @abstractmethod
     def calcular_impuesto(self):
-        return self.valor_comercial * self.impuesto 
-    
-class Motocicleta:
-    def __init__(self, placa, valor_comercial, impuesto=0.08):
-        if valor_comercial < 0:
-            raise ValueError("El valor comercial no puede ser negativo")
-        self.placa = placa
-        self.valor_comercial = valor_comercial
-        self.impuesto = impuesto
+        pass
 
+
+class Automovil(Vehiculo):
     def calcular_impuesto(self):
-        return self.valor_comercial * self.impuesto
-    
-def calcular_impuesto_total(vehiculos):
-    if not isinstance(vehiculos, list):
-        raise TypeError("Debe enviar una lista de vehiculos")
-    
+        return self.valor_comercial * 0.015  
+
+
+class Motocicleta(Vehiculo):
+    def calcular_impuesto(self):
+        return self.valor_comercial * 0.01   
+
+
+def calcular_impuesto_total(lista_vehiculos):
     total = 0
-    for v in vehiculos:
-        if not hasattr(v, "calcular_impuesto"):
-            raise TypeError("Los elementos deben tener calcular_impuesto()")
-        total += v.calcular_impuesto()
-    return total 
+    for v in lista_vehiculos:
+        total += v.calcular_impuesto()  # polimorfismo
+    return total
 
-# ======================= SIMULACION ========================
 
-def simulacion_vehiculos():
-    lista = [
-        Automovil("ABC123", 32000000),
-        Motocicleta("XYZ987", 8000000),
-        Automovil("JKL546", 45000000, impuesto=0.12)
+if __name__ == "__main__":
+    vehiculos = [
+        Automovil("ABC123", 50_000_000),
+        Motocicleta("XYZ987", 8_000_000),
     ]
-
-    total = calcular_impuesto_total(lista)
-    print(f"IMPUESTO TOTAL A PAGAR: ${total:,.0f}")
-
-simulacion_vehiculos()
+    print("Impuesto total:", calcular_impuesto_total(vehiculos))
