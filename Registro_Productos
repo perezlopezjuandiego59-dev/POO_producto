@@ -1,0 +1,47 @@
+class ProductoNormal:
+    def __init__(self, nombre, precio):
+        if precio < 0:
+            raise ValueError("El precio no puede ser negativo")
+        self.nombre = nombre
+        self.precio = precio
+
+    def calcular_precio(self):
+        return self.precio 
+    
+class ProductoImportado:
+    def __init__(self, nombre, precio, impuesto=0.15):
+        if precio < 0:
+            raise ValueError("El precio no puede ser negativo")
+        if not (0 <= impuesto <= 1):
+            raise ValueError("El impuesto debe estar entre 0 y 1")
+        
+        self.nombre = nombre
+        self.precio = precio
+        self.impuesto = impuesto
+
+    def calcular_precio(self):
+        return self.precio * (1 + self.impuesto)
+    
+def calcular_precio_total(productos):
+    if not isinstance(productos, list):
+        raise TypeError("Debe enviar una lista de productos")
+    
+    total = 0
+    for p in productos:
+        if not hasattr(p, "calcular_precio"):
+            raise TypeError("Los elementos de la lista deben tener calcular_precio()")
+        total += p.calcular_precio()
+    return total 
+
+# ======================= SIMULACION =====================
+def simulacion_productos():
+    lista = [
+        ProductoNormal("Pan", 3000),
+        ProductoImportado("Chocolate Suizo", 15000, 0.25),
+        ProductoNormal("Leche", 5000),
+    ]
+
+    total = calcular_precio_total(lista)
+    print(f"PRECIO TOTAL DE PRODUCTOS: ${total:.0f}")
+
+simulacion_productos()
