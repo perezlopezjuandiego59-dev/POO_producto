@@ -1,0 +1,40 @@
+class Autobus:
+    def __init__(self, distancia_km, tarifa_base=2000):
+        self.distancia_km = distancia_km
+        self.tarifa_base = tarifa_base
+
+    def calcular_tarifa(self):
+        if self.distancia_km <= 0:
+            raise ValueError("La distancia debe ser mayor a 0.")
+        return self.tarifa_base + (self.distancia_km * 300)
+    
+class Metro:
+    def __init__(self, tiempo_minutos, tarifa_base=2500):
+        self.tiempo_minutos = tiempo_minutos
+        self.tarifa_base = tarifa_base
+
+    def calcular_tarifa(self):
+        if self.tiempo_minutos <= 0:
+            raise ValueError("El tiempo debe ser mayor a 0.")
+        return self.tarifa_base + (self.tiempo_minutos * 50)
+
+class Taxi:
+    def __init__(self, distancia_km, tiempo_minutos, tarifa_base=4000):
+        self.distancia_km = distancia_km
+        self.tiempo_minutos = tiempo_minutos
+        self.tarifa_base = tarifa_base
+
+    def calcular_tarifa(self):
+        if self.distancia_km <= 0 or self.tiempo_minutos <= 0:
+            raise ValueError("Distancia y tiempo deben ser mayores a 0.")
+        return self.tarifa_base + (self.distancia_km * 800) + (self.tiempo_minutos * 100)
+    
+# =================== SIMULACION =================================
+vehiculos = [
+    Autobus(distancia_km=10),
+    Metro(tiempo_minutos=25),
+    Taxi(distancia_km=5, tiempo_minutos=15)
+]
+
+for v in vehiculos:
+    print(type(v).__name__, "Tarifa:", v.calcular_tarifa())
