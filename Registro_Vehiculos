@@ -1,0 +1,46 @@
+class Automovil: 
+    def __init__(self, placa, valor_comercial, impuesto=0.10):
+        if valor_comercial < 0:
+            raise ValueError("El valor comercial no puede ser negativo")
+        self.placa = placa
+        self.valor_comercial = valor_comercial
+        self.impuesto = impuesto
+
+    def calcular_impuesto(self):
+        return self.valor_comercial * self.impuesto 
+    
+class Motocicleta:
+    def __init__(self, placa, valor_comercial, impuesto=0.08):
+        if valor_comercial < 0:
+            raise ValueError("El valor comercial no puede ser negativo")
+        self.placa = placa
+        self.valor_comercial = valor_comercial
+        self.impuesto = impuesto
+
+    def calcular_impuesto(self):
+        return self.valor_comercial * self.impuesto
+    
+def calcular_impuesto_total(vehiculos):
+    if not isinstance(vehiculos, list):
+        raise TypeError("Debe enviar una lista de vehiculos")
+    
+    total = 0
+    for v in vehiculos:
+        if not hasattr(v, "calcular_impuesto"):
+            raise TypeError("Los elementos deben tener calcular_impuesto()")
+        total += v.calcular_impuesto()
+    return total 
+
+# ======================= SIMULACION ========================
+
+def simulacion_vehiculos():
+    lista = [
+        Automovil("ABC123", 32000000),
+        Motocicleta("XYZ987", 8000000),
+        Automovil("JKL546", 45000000, impuesto=0.12)
+    ]
+
+    total = calcular_impuesto_total(lista)
+    print(f"IMPUESTO TOTAL A PAGAR: ${total:,.0f}")
+
+simulacion_vehiculos()
