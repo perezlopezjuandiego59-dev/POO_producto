@@ -1,40 +1,40 @@
-class Autobus:
-    def __init__(self, distancia_km, tarifa_base=2000):
-        self.distancia_km = distancia_km
-        self.tarifa_base = tarifa_base
+from abc import ABC, abstractmethod
 
+class VehiculoTransporte(ABC):
+    def __init__(self, distancia_km, tiempo_min, tarifa_base):
+        self.distancia_km = max(0, distancia_km)
+        self.tiempo_min = max(0, tiempo_min)
+        self.tarifa_base = max(0, tarifa_base)
+
+    @abstractmethod
     def calcular_tarifa(self):
-        if self.distancia_km <= 0:
-            raise ValueError("La distancia debe ser mayor a 0.")
-        return self.tarifa_base + (self.distancia_km * 300)
-    
-class Metro:
-    def __init__(self, tiempo_minutos, tarifa_base=2500):
-        self.tiempo_minutos = tiempo_minutos
-        self.tarifa_base = tarifa_base
+        pass
 
+
+class Autobus(VehiculoTransporte):
     def calcular_tarifa(self):
-        if self.tiempo_minutos <= 0:
-            raise ValueError("El tiempo debe ser mayor a 0.")
-        return self.tarifa_base + (self.tiempo_minutos * 50)
+        return self.tarifa_base + self.distancia_km * 500  
 
-class Taxi:
-    def __init__(self, distancia_km, tiempo_minutos, tarifa_base=4000):
-        self.distancia_km = distancia_km
-        self.tiempo_minutos = tiempo_minutos
-        self.tarifa_base = tarifa_base
 
+class Metro(VehiculoTransporte):
     def calcular_tarifa(self):
-        if self.distancia_km <= 0 or self.tiempo_minutos <= 0:
-            raise ValueError("Distancia y tiempo deben ser mayores a 0.")
-        return self.tarifa_base + (self.distancia_km * 800) + (self.tiempo_minutos * 100)
-    
-# =================== SIMULACION =================================
-vehiculos = [
-    Autobus(distancia_km=10),
-    Metro(tiempo_minutos=25),
-    Taxi(distancia_km=5, tiempo_minutos=15)
-]
+        return self.tarifa_base + self.tiempo_min * 50      
 
-for v in vehiculos:
-    print(type(v).__name__, "Tarifa:", v.calcular_tarifa())
+
+class Taxi(VehiculoTransporte):
+    def calcular_tarifa(self):
+        return self.tarifa_base + self.distancia_km * 800 + self.tiempo_min * 30  
+
+
+def calcular_tarifa_viaje(vehiculo: VehiculoTransporte):
+    return vehiculo.calcular_tarifa()
+
+
+if __name__ == "__main__":
+    v1 = Autobus(10, 30, 2000)
+    v2 = Metro(10, 20, 2500)
+    v3 = Taxi(10, 15, 3000)
+
+    print("Tarifa autobus: $", calcular_tarifa_viaje(v1))
+    print("Tarifa Metro: $", calcular_tarifa_viaje(v2))
+    print("Tarifa Taxi: $", calcular_tarifa_viaje(v3)) 
