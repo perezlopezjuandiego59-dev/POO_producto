@@ -1,34 +1,52 @@
-class EmpleadoAsalariado:
+from abc import ABC, abstractmethod
+
+class Empleado(ABC):
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    @abstractmethod
+    def calcular_salario(self):
+        pass
+
+
+class EmpleadoAsalariado(Empleado):
     def __init__(self, nombre, salario_mensual):
-        self.nombre = nombre
-        self.salario_mensual = salario_mensual
+        super().__init__(nombre)
+        self.salario_mensual = max(0, salario_mensual)
 
     def calcular_salario(self):
-        if self.salario_mensual <= 0:
-            raise ValueError("El salario debe ser mayor a 0.")
         return self.salario_mensual
-    
-class EmpleadoPorHoras:
-    def __init__(self, nombre, valor_hora, horas):
-        self.nombre = nombre
-        self.valor_hora = valor_hora
-        self.horas = horas
+
+
+class EmpleadoPorHoras(Empleado):
+    def __init__(self, nombre, horas_trabajadas, tarifa_hora):
+        super().__init__(nombre)
+        self.horas_trabajadas = max(0, horas_trabajadas)
+        self.tarifa_hora = max(0, tarifa_hora)
 
     def calcular_salario(self):
-        if self.valor_hora <= 0 or self.horas <= 0:
-            raise ValueError("Valores invalidos para empleado por horas")
-        return self.valor_hora * self.horas 
-    
+        horas = self.horas_trabajadas
+        tarifa = self.tarifa_hora
+        if horas <= 40:
+            return horas * tarifa
+        elif horas <= 48:
+            return 40 * tarifa + (horas - 40) * tarifa * 1.5
+        else:
+            return (40 * tarifa +
+                    8 * tarifa * 1.5 +
+                    (horas - 48) * tarifa * 2)
+
+
 def calcular_salario_total(empleados):
     total = 0
     for e in empleados:
         total += e.calcular_salario()
-    return total 
+    return total
 
-# ===================== SIMULACION ===================
-empleados = [
-    EmpleadoAsalariado("Maria", 2500000),
-    EmpleadoPorHoras("Jose", 40000, 80)
-]
 
-print("Salario total a pagar:", calcular_salario_total(empleados))
+if __name__ == "__main__":
+    empleados = [
+        EmpleadoAsalariado("Ana", 2_500_000),
+        EmpleadoPorHoras("Luis", 50, 20_000),
+    ]
+    print("Salario total:", calcular_salario_total(empleados))
